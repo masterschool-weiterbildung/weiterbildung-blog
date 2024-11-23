@@ -91,6 +91,26 @@ def add_author(author: dict, data: list[dict]):
     return data
 
 
+def delete_post(post_id):
+    blog_posts = fetch_data(JSON_DATA_PATH)[PAYLOAD]
+    for post in blog_posts:
+        if post[ID] == post_id:
+            blog_posts.remove(post)
+            break
+
+    return write_data(blog_posts, JSON_DATA_PATH)
+
+
+def add_post(author, content, title):
+    blog_posts = fetch_data(JSON_DATA_PATH)
+    updated_blog_posts = add_author(
+        build_dict(get_last_id(blog_posts), author,
+                   title, content),
+        blog_posts[PAYLOAD])
+
+    return write_data(updated_blog_posts, JSON_DATA_PATH)
+
+
 def build_dict(id: int,
                author: str,
                title: str,

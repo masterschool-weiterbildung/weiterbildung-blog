@@ -4,7 +4,7 @@ from app.util import (fetch_data,
                       JSON_DATA_PATH,
                       build_to_add_dict,
                       write_data, add_author, build_dict, PAYLOAD, ID,
-                      get_last_id)
+                      get_last_id, delete_post, add_post)
 
 app = Flask(__name__)
 
@@ -12,7 +12,7 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     blog_posts = fetch_data(JSON_DATA_PATH)
-    return render_template('index.html', posts=blog_posts)
+    return render_template('index.html', posts=blog_posts[PAYLOAD])
 
 
 @app.route('/add', methods=['GET', 'POST'])
@@ -22,20 +22,18 @@ def add():
         title = request.form.get("title")
         content = request.form.get("content")
 
-        blog_posts = fetch_data(JSON_DATA_PATH)
-
-        updated_blog_posts = add_author(
-            build_dict(get_last_id(blog_posts), author,
-                       title, content),
-            blog_posts[PAYLOAD])
-
-        result_message = write_data(updated_blog_posts, JSON_DATA_PATH)
-
-        print(result_message)
+        result_message = add_post(author, content, title)
 
         return redirect(url_for('index'))
 
     return render_template('add.html')
+
+
+@app.route('/delete/<int:post_id>')
+def delete(post_id):
+    result_message = delete_post(post_id)
+
+    return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
