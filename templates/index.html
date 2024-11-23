@@ -14,8 +14,8 @@
     <h2>{{ post["title"] }}</h2>
     <p><em>{{ post["author"] }}</em></p>
     <p>{{ post["content"] }}</p>
-    <a href="/delete/{{post['id']}}"
-       onclick="return confirm('Are you sure you want to delete this item?');">Delete</a>
+    <input type="button" onclick="location.href='/delete/{{post['id']}}';" value="Delete"/>
+    <input type="button" onclick="location.href='/update/{{post['id']}}';" value="Update"/>
     {% endfor %}
 </div>
 <div>

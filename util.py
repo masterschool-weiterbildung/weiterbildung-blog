@@ -91,14 +91,27 @@ def add_author(author: dict, data: list[dict]):
     return data
 
 
-def delete_post(post_id):
+def fetch_post_by_id(blog_id):
     blog_posts = fetch_data(JSON_DATA_PATH)[PAYLOAD]
     for post in blog_posts:
-        if post[ID] == post_id:
-            blog_posts.remove(post)
-            break
+        if post[ID] == blog_id:
+            return post
+
+
+def delete_post(blog_id):
+    blog_posts = fetch_data(JSON_DATA_PATH)[PAYLOAD]
+
+    post = fetch_post_by_id(blog_id)
+
+    blog_posts.remove(post)
 
     return write_data(blog_posts, JSON_DATA_PATH)
+
+
+def update_post(post_id: int, author: str, title: str, content: str):
+    delete_post(post_id)
+
+    return add_post(author, title, content)
 
 
 def add_post(author, content, title):
