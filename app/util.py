@@ -14,6 +14,11 @@ RESULT = "result"
 MESSAGE = "message"
 PAYLOAD = "payload"
 
+ID = "id"
+AUTHOR = "author"
+TITLE = "title"
+CONTENT = "content"
+
 cached_data = None
 
 
@@ -53,3 +58,61 @@ def load_data(file_path: WindowsPath) -> result_message:
         return (result_message
                 (True, "File loaded successfully.",
                  payload))
+
+
+def write_data(details: dict,
+               file_path: WindowsPath) -> result_message:
+    try:
+        if "json" in file_path.name:
+            with open(file_path, 'w') as handle:
+                handle.write(json.dumps(details))
+    except FileNotFoundError:
+        return (result_message
+                (False,
+                 "Error: The file was not found.", ""))
+    except IOError:
+        return (result_message
+                (False,
+                 "Error: Could not write to the file.",
+                 ""))
+    except Exception as e:
+        return (result_message
+                (False,
+                 f"An unexpected error occurred: {e}",
+                 ""))
+    else:
+        return (result_message
+                (True, "File written successfully.",
+                 ""))
+
+
+def add_author(author: dict, data: list[dict]):
+    data.append(author)
+    return data
+
+
+def build_dict(id: int,
+               author: str,
+               title: str,
+               content: str) -> dict:
+    return {
+        ID: id,
+        AUTHOR: author,
+        TITLE: title,
+        CONTENT: content
+    }
+
+
+def build_to_add_dict(
+        author: str,
+        title: str,
+        content: str) -> dict:
+    return {
+        AUTHOR: author,
+        TITLE: title,
+        CONTENT: content
+    }
+
+
+def get_last_id(blog_posts) -> int:
+    return blog_posts[PAYLOAD][-1][ID] + 1
