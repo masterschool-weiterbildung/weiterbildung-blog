@@ -43,9 +43,9 @@ def update(post_id):
 
     if request.method == 'POST':
         # Update the post in the JSON file
-        blog_author = request.form[AUTHOR]
-        blog_title = request.form[TITLE]
-        blog_content = request.form[CONTENT]
+        blog_author = request.form.get(AUTHOR)
+        blog_title = request.form.get(TITLE)
+        blog_content = request.form.get(CONTENT)
 
         update_post(post_id, blog_author, blog_title, blog_content)
 
