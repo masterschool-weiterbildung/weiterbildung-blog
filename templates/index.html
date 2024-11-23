@@ -14,12 +14,16 @@
     <h2>{{ post["title"] }}</h2>
     <p><em>{{ post["author"] }}</em></p>
     <p>{{ post["content"] }}</p>
-    <input type="button" onclick="location.href='/delete/{{post['id']}}';" value="Delete"/>
-    <input type="button" onclick="location.href='/update/{{post['id']}}';" value="Update"/>
+    <input type="button" onclick="location.href='/delete/{{post['id']}}';"
+           value="Delete"/>
+    <input type="button" onclick="location.href='/update/{{post['id']}}';"
+           value="Update"/>
+    <input type="button" onclick="location.href='/like/{{post['id']}}';"
+           value="Like: {{ post['like'] }}"/>
     {% endfor %}
 </div>
 <div>
-    <a href="{{ url_for('add') }}">Go back to Add page</a>
+    <a href="{{ url_for('add') }}">Add Post</a>
 </div>
 </body>
 </html>

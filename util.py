@@ -1,23 +1,8 @@
 import json
-from pathlib import Path, WindowsPath
+from pathlib import WindowsPath
 
-PACKAGE_STATIC = "static"
-
-PACKAGE_DATA = "data"
-
-PACKAGE_JSON_FILE = "data.json"
-
-JSON_DATA_PATH = Path(
-    __file__).parent / PACKAGE_STATIC / PACKAGE_DATA / PACKAGE_JSON_FILE
-
-RESULT = "result"
-MESSAGE = "message"
-PAYLOAD = "payload"
-
-ID = "id"
-AUTHOR = "author"
-TITLE = "title"
-CONTENT = "content"
+from constant_blog import RESULT, MESSAGE, PAYLOAD, ID, JSON_DATA_PATH, \
+    CONTENT, AUTHOR, TITLE, LIKE
 
 cached_data = None
 
@@ -60,7 +45,7 @@ def load_data(file_path: WindowsPath) -> result_message:
                  payload))
 
 
-def write_data(details: dict,
+def write_data(details: list[dict],
                file_path: WindowsPath) -> result_message:
     try:
         if "json" in file_path.name:
@@ -108,31 +93,34 @@ def delete_post(blog_id):
     return write_data(blog_posts, JSON_DATA_PATH)
 
 
-def update_post(post_id: int, author: str, title: str, content: str):
+def update_post(post_id: int, author: str, title: str, content: str,
+                like: int):
     delete_post(post_id)
 
-    return add_post(author, title, content)
+    return add_post(author, title, content, like)
 
 
-def add_post(author, content, title):
+def add_post(author, title, content, like) -> dict:
     blog_posts = fetch_data(JSON_DATA_PATH)
     updated_blog_posts = add_author(
         build_dict(get_last_id(blog_posts), author,
-                   title, content),
+                   title, content, like),
         blog_posts[PAYLOAD])
 
     return write_data(updated_blog_posts, JSON_DATA_PATH)
 
 
-def build_dict(id: int,
+def build_dict(post_id: int,
                author: str,
                title: str,
-               content: str) -> dict:
+               content: str,
+               like: int) -> dict:
     return {
-        ID: id,
+        ID: post_id,
         AUTHOR: author,
         TITLE: title,
-        CONTENT: content
+        CONTENT: content,
+        LIKE: like
     }
 
 
@@ -148,4 +136,11 @@ def build_to_add_dict(
 
 
 def get_last_id(blog_posts) -> int:
-    return blog_posts[PAYLOAD][-1][ID] + 1
+    try:
+        return blog_posts[PAYLOAD][-1][ID] + 1
+    except IndexError:
+        return 1
+
+
+def get_like_id(like) -> int:
+    return like + 1
